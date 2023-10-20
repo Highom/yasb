@@ -94,9 +94,9 @@ bars:
       bottom: 0
       right: 0
     widgets:
-      left:   ["komorebi_workspaces", "komorebi_active_layout", "active_window"]
+      left:   ["weather"]
       center: ["clock"]
-      right:  ["explorer_button", "wifi", "cpu", "memory", "battery"]
+      right:  ["media", "battery"]
 
 # widgets:
   # my-clock-widget:
@@ -368,7 +368,7 @@ widgets:
       label_no_window: ""
       max_length: 48
       max_length_ellipsis: "..."
-      monitor_exclusive: true
+      monitor_exclusive: false
 
   battery:
     type: "yasb.battery.BatteryWidget"
@@ -378,18 +378,17 @@ widgets:
   clock:
     type: "yasb.clock.ClockWidget"
     options:
-        label: "{%H:%M:%S %Z}"
+        label: "{%H:%M:%S}"
         label_alt: "{%d-%m-%y %H:%M:%S %Z}"
-        timezones: ["Europe/London", "America/New_York"]
+        timezones: ["Europe/Zurich"]
         callbacks:
-          on_middle: "exec explorer.exe shell:Appsfolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App"
-          on_right: "next_timezone"
+          on_left: "exec explorer.exe shell:Appsfolder\\Microsoft.WindowsAlarms_8wekyb3d8bbwe!App"
 
   cpu:
     type: "yasb.cpu.CpuWidget"
     options:
       label: "\uf200 {info[histograms][cpu_percent]}"
-      label_alt: "\uf200 CPU: {info[percent][total]}% | freq: {info[freq][current]:.2f} Mhz"
+      label_alt: "\uf200 CPU: {info[percent][total]}%"
       update_interval: 500
       histogram_icons:
         - '\u2581' # 0%
@@ -406,10 +405,11 @@ widgets:
   memory:
     type: "yasb.memory.MemoryWidget"
     options:
-        label: "\uf538 {virtual_mem_free}"
-        label_alt: "\uf538 {virtual_mem_percent}%"
+        label: "\ueacd {virtual_mem_percent}%"
+        label_alt: "\ueacd {virtual_mem_free}"
         update_interval: 5000
         callbacks:
+          on_left: "toggle_label"
           on_right: "exec cmd /c Taskmgr"
 
   komorebi_workspaces:
@@ -424,7 +424,7 @@ widgets:
   komorebi_active_layout:
     type: "komorebi.active_layout.ActiveLayoutWidget"
     options:
-      hide_if_offline: false
+      hide_if_offline: true
       label: "{icon}"
       layout_icons:
         bsp: "[\\\\]"
@@ -445,7 +445,7 @@ widgets:
   wifi:
     type: "yasb.wifi.WifiWidget"
     options:
-        label: "{wifi_icon}"
+        label: "{wifi_icon} "
         label_alt: "{wifi_icon} {wifi_name}"
         update_interval: 5000
         wifi_icons:
@@ -455,24 +455,12 @@ widgets:
           - "\udb82\udd25"  # 51-75% strength
           - "\udb82\udd28"  # 76-100% strength. Alternate theming: \uf1eb
         callbacks:
+          on_left: "toggle_label"
           on_middle: "do_nothing"
           on_right: "exec cmd.exe /c start ms-settings:network"
 
 
   # Some custom widgets
-
-  explorer_button:
-    type: "yasb.custom.CustomWidget"
-    options:
-      label: "\uf07c"
-      label_alt: "Explorer"
-      class_name: "explorer-widget"
-      exec_options:
-        run_once: true
-      callbacks:
-        on_left: "exec explorer.exe"
-        on_right: "toggle_label"
-
   ip_info:
     type: "yasb.custom.CustomWidget"
     options:
@@ -492,11 +480,21 @@ widgets:
     type: "yasb.custom.CustomWidget"
     options:
       label: "\uf0c2 {data[current_condition][0][temp_C]}\u00b0c"
-      label_alt: "\uf0c2 {data[current_condition][0][weatherDesc][0][value]}"
+      label_alt: "\uf0c2 {data[current_condition][0][temp_C]}\u00b0c FL:{data[current_condition][0][FeelsLikeC]}\u00b0c {data[current_condition][0][weatherDesc][0][value]}"
       class_name: "weather-widget"
       exec_options:
-        run_cmd: "curl.exe  wttr.in/Vancouver?format=j1"
+        run_cmd: "curl.exe  wttr.in?format=j1"
         # run every hour
         run_interval: 3600000
         return_format: "json"
 
+  media:
+    type: "yasb.custom.CustomWidget"
+    options:
+      label: "\uf001 {data[artist]} - {data[title]}"
+      label_alt: "{data[track]}: {data[album]} - {data[album_artist]}"
+      class_name: "media-widget"
+      exec_options:
+        run_cmd: "python.exe scripts\\media.py"
+        run_interval: 5000
+        return_format: "json"
