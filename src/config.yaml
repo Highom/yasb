@@ -491,8 +491,8 @@ widgets:
   media:
     type: "yasb.custom.CustomWidget"
     options:
-      label: "\uf001 {data[artist]} - {data[title]}"
-      label_alt: "{data[track]}: {data[album]} - {data[album_artist]}"
+      label: "\uf001 {data[titleAndArtist]}"
+      label_alt: "nothing"
       class_name: "media-widget"
       exec_options:
         run_cmd: "python.exe scripts\\media.py"
