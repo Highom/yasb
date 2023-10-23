@@ -499,4 +499,4 @@ widgets:
         run_interval: 5000
         return_format: "json"
       callbacks:
-        on_left: "exec wt.exe -f new-tab --title Lyrics Powershell lyricstify start"
+        on_left: "exec wt.exe new-tab --title Lyrics Powershell lyricstify start"
