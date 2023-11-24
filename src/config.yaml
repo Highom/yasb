@@ -484,8 +484,8 @@ widgets:
       class_name: "weather-widget"
       exec_options:
         run_cmd: "curl.exe  wttr.in?format=j1"
-        # run every hour
-        run_interval: 3600000
+        # run every 15 mins
+        run_interval: 900000
         return_format: "json"
 
   media:
@@ -498,5 +498,3 @@ widgets:
         run_cmd: "python.exe scripts\\media.py"
         run_interval: 5000
         return_format: "json"
-      callbacks:
-        on_left: "exec wt.exe new-tab --title Lyrics Powershell lyricstify start"
